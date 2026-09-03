@@ -31,6 +31,11 @@ In [RStudio](https://bookdown.org/yihui/rmarkdown/r-code.html) use the shortcut
 Make sure to load packages at the *beginning* of your notebooks! This is a
 best-practice.
 
+```{r}
+library(tidyverse)
+```
+
+
 ### __q2__ Run the chunk with `library(tidyverse)`. What packages are loaded?
 
 In
@@ -38,9 +43,12 @@ In
 press `Ctrl + Alt + T` (`Cmd + Option + T` on Mac) to run the code chunk at your
 cursor.
 
+Other packages loaded with tidyverse include dplyr, forcats, ggplot2, lubridate, purrr, and more.
+
 
 ### __q3__ What are the main differences between `install.packages()` and `library()`? How often do you need to call each one?
 
+install.packages() downloads the packages used in the library locally to your machine. library() points to where those packages can be found.
 
 <!-- include-exit-ticket -->
 # Exit Ticket
