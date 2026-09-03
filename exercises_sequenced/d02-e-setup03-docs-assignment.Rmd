@@ -30,7 +30,7 @@ developers.
 associated with `"dplyr"`. What vignettes are available?
 
 ```{r q1-task, eval=FALSE}
-## TODO: Re-write the code above following the tidyverse style guide
+vignette(package= "dplyr")
 ```
 
 
@@ -47,7 +47,7 @@ only those rows of the `iris` dataset where `Species == "setosa"`.
 iris %>%
   as_tibble() %>%
   filter(
-    # TODO: Filter on Species "setosa"
+    Species == "setosa"
   )
 ```
 
@@ -67,7 +67,11 @@ question: How could we `filter` the `iris` dataset to return only those rows
 with `Sepal.Length` between `5.1` and `6.4`?
 
 ```{r q3-task}
-## TODO: Consult the docs; Write your code here
+iris %>%
+  as_tibble()%>%
+    filter(
+      between (Sepal.Length, 5.1, 6.4)
+    )
 ```
 
 
@@ -79,6 +83,9 @@ learn more.
 ### __q5__ Look up the documentation on `cut_number`; what package does it come
 from? What about `parse_number()`? What about `row_number()`?
 
+cut_number comes from the package ggplot2
+parse_number comes from the package readr
+row_number comes from the package dplyr
 
 <!-- include-exit-ticket -->
 # Exit Ticket

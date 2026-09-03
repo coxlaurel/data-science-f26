@@ -56,6 +56,11 @@ Some nomenclature:
 
 ### __q2__ Run `glimpse(diamonds)`; what variables does `diamonds` have?
 
+```{r}
+glimpse(diamonds)
+```
+
+diamonds has the variables carat, cut, color, clarity, depth, table, price, x, y, z
 
 ### __q3__ Run `summary(diamonds)`; what are the common values for each of the
 variables? How widely do each of the variables vary?
@@ -69,7 +74,20 @@ summary(diamonds)
 
 **Observations**:
 
-- (Write your observations here!)
+Carat
+- has a lot variability (0-5)
+
+Depth
+- ranges from 43-79
+
+table
+- ranges from 43-95
+
+price
+- high variability (326-18823)
+
+y,z
+- there's a max that's very far from the mean and median
 
 You should always analyze your dataset in the simplest way possible, build
 hypotheses, and devise more specific analyses to probe those hypotheses. The
@@ -103,6 +121,8 @@ turn it into `diamonds %>% glimpse()`.
 ### __q4__ Use the pipe operator to re-write `summary(diamonds)`.
 
 ```{r q4-task}
+diamonds%>%
+  summary()
 ```
 
 ## Reading Data
@@ -111,6 +131,10 @@ turn it into `diamonds %>% glimpse()`.
 So far we've only been looking at built-in datasets. Ultimately, we'll want to read in our own data. We'll get to the art of loading and *wrangling* data later, but for now, know that the `readr` package provides us tools to read data. Let's quickly practice loading data below.
 
 ### __q5__ Use the function `read_csv()` to load the file `"./data/tiny.csv"`.
+```{r}
+read_csv("./data/tiny.csv")
+```
+
 
 ```{r q5-task}
 # Note: R uses the arrow `<-` operator rather than `=` to assign variables
