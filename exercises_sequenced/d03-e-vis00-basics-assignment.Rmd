@@ -26,12 +26,16 @@ Inspect the `diamonds` dataset. What do the `cut`, `color`, and `clarity` variab
 *Hint*: We learned how to inspect a dataset in `e-data-00-basics`!
 
 ```{r q1-task, eval=FALSE}
+summary(diamonds)
 ```
+
+cut is a rating, color is given a letter rating, clarity is another grouping/rating of sorts.
 
 ### __q2__ Standard checks
 
 Use your "standard checks" to determine what variables the dataset has.
 
+[carat, cut, color, clarity, depth, table, price, x, y, z]
 
 Now that we have the list of variables in the dataset, we know what we can visualize!
 
@@ -63,7 +67,7 @@ Assuming we're not messing with the data[1], this implies that making a plot boi
 
 [1] Sometimes we'll mess with the data to make a more informative plot---stay tuned!
 
-Let's practice: Adapt the code above to complet the task below.
+Let's practice: Adapt the code above to complete the task below.
 
 ### __q3__ Make your first ggplot
 
@@ -73,12 +77,20 @@ Using `ggplot`, visualize `price` vs `carat` with points. What trend do you obse
 
 ```{r q3-task}
 ## TODO: Complete this code
-ggplot(diamonds)
+ggplot(
+  data = diamonds
+) +
+  geom_point(
+    mapping = aes(
+      y = price,
+      x = carat
+    )
+  )
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+- price generally increases with increasing carats
 
 ## A note on *aesthetics*
 
@@ -107,6 +119,8 @@ As with any R function, we can consult the documentation to learn more.
 
 Look up the documentation for `geom_point()`, and scroll down to the *Aesthetics* section. What aesthetics (other than `x` and `y`) does `geom_point()` accept?
 
+alpha, colour, fill, group, shape, size, stroke
+
 ### __q5__ Visualize a third variable
 
 Adapt your code from q3 to visualize `price`, `carat`, and `cut` simultaneously.
@@ -115,12 +129,21 @@ Adapt your code from q3 to visualize `price`, `carat`, and `cut` simultaneously.
 
 ```{r q4-task}
 ## TODO: Complete this code
-ggplot(diamonds)
+ggplot(
+  data = diamonds
+) +
+  geom_point(
+    mapping = aes(
+      y = price,
+      x = carat,
+      colour = cut
+    )
+  )
 ```
 
 **Observations**:
 
-- (Write your observations here!)
+- fair cuts are priced the lowest, and ideal cuts get the highest profit
 
 <!-- include-exit-ticket -->
 # Exit Ticket
