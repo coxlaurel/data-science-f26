@@ -20,7 +20,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r library}
 library(tidyverse)
-
 ```
 
 ## Data Types
@@ -29,7 +28,7 @@ Any time we store data in a computer, we need to work with *types*. A type is a 
 
 ```{r}
 ## No need to edit; uncomment and run
-# "a" + 1
+"a" + 1
 ```
 
 However, we *can* "add" the letter "a" and the *string* "1":
@@ -74,7 +73,7 @@ airport == ATL
 
 **Observations**:
 
-- Write your explanation here
+- ATL isn't a string type, whereas the variable airport is trying to compare its string value of "BOS" to it.
 
 ## Casting
 
@@ -92,7 +91,7 @@ For example, sometimes our numerical data gets loaded as a string, in which case
 
 ```{r q2-task}
 v_string <- c("00", "45", "90")
-v_integer <- NA_real_
+v_integer <- as.integer(v_string)
 ```
 
 Use the following test to check your work.
