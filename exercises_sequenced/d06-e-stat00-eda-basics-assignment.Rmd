@@ -28,7 +28,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r library}
 library(tidyverse)
-
 ```
 
 ### __q0__ Simple checks
@@ -36,6 +35,7 @@ library(tidyverse)
 Remember from `e02-data-basics` there were *simple checks* we're supposed to do? Do those simple checks on the diamonds dataset below.
 
 ```{r q0-task}
+glimpse(diamonds)
 ```
 
 I'm going to walk you through a train of thought I had when studying the diamonds dataset.
@@ -59,7 +59,7 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+- Ideal cuts are the most common type of cut sitting at over 20,000 versus the 2nd most popular cut which is below 15,000.
 
 ## Hypothesis 2
 
@@ -78,7 +78,7 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+- The graph has axes that relate to the hypothesis, however it isn't effective. All the different cuts look almost the same on this graph.
 
 The following is a set of *boxplots*; the middle bar denotes the median, the boxes denote the *quartiles* (upper and lower "quarters" of the data), and the lines and dots denote large values and outliers.
 
@@ -93,7 +93,7 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+- Ideal cuts are the least pricey because the median line is the lowest of all of them.
 
 ## Unraveling Hypothesis 2
 
@@ -112,7 +112,7 @@ diamonds %>%
 ```
 
 **Observations**:
-- Write your observations here!
+- The cut for carat sacrifice seems true because the worst cut has the highest median carat value.
 
 Note what we just did:
 
