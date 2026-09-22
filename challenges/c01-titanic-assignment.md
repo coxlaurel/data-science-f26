@@ -155,22 +155,26 @@ df_titanic %>% summarize(total = sum(n))
 ``` r
 ## TASK: Visualize counts against `Class` and `Sex`
 df_titanic %>%
-  ggplot(aes(x = Sex, y = n, fill = Class)) +
-  geom_col(position = "Dodge") +
-  labs(
-    title = "Count for Class and Sex",
-    y = "n (count)"
-  )
+  filter(Survived == "Yes") %>%
+    ggplot(aes(x = Sex, y = n, fill = Class)) +
+    geom_col(position = "Dodge") +
+    labs(
+      title = "Count for Class and Sex",
+      y = "n (count)"
+    )
 ```
 
 ![](c01-titanic-assignment_files/figure-gfm/q3-task-1.png)<!-- -->
 
 **Observations**:
 
-- A lot more men were present on the ship then women, one reason being
-  that most of the crew is made up of men and accounted for almost half
-  of the passengers.
-- First class is the only class where women outnumbered guys.
+- The class and gender with he largest quantity of survivors were male
+  crew members.
+
+- First class women were the second largest group to survive.
+
+- Interestingly, male lower classes (3rd and crew) had higher survival
+  numbers than 1st class males.
 
 # Deeper Look
 
@@ -218,14 +222,15 @@ df_prop
 
 ``` r
 df_prop %>%
-  ggplot(aes(x = Sex, y = Prop, fill = Class)) +
-  geom_col(position = "Dodge") +
-  labs(
-    title = "Proportional Count for Class and Sex",
-  )
+  filter(Survived == "Yes") %>%
+    ggplot(aes(x = Sex, y = Prop, fill = Class)) +
+    geom_col(position = "Dodge") +
+    labs(
+      title = "Proportional Count for Class and Sex",
+    )
 ```
 
-    ## Warning: Removed 4 rows containing missing values or values outside the scale range
+    ## Warning: Removed 2 rows containing missing values or values outside the scale range
     ## (`geom_col()`).
 
 ![](c01-titanic-assignment_files/figure-gfm/q4-task-1.png)<!-- -->
@@ -246,15 +251,16 @@ additional variables!
 
 ``` r
 df_prop %>%
-  ggplot(aes(x = Sex, y = Prop, fill = Class)) +
-  geom_col(position = "Dodge") + 
-  facet_grid(~Age) +
-  labs(
-    title = "Survival by Class, Sex, and Age "
-  )
+  filter(Survived == "Yes") %>%
+    ggplot(aes(x = Sex, y = Prop, fill = Class)) +
+    geom_col(position = "Dodge") + 
+    facet_grid(~Age) +
+    labs(
+      title = "Survival by Class, Sex, and Age "
+    )
 ```
 
-    ## Warning: Removed 4 rows containing missing values or values outside the scale range
+    ## Warning: Removed 2 rows containing missing values or values outside the scale range
     ## (`geom_col()`).
 
 ![](c01-titanic-assignment_files/figure-gfm/q5-task-1.png)<!-- -->
@@ -262,8 +268,8 @@ df_prop %>%
 **Observations**:
 
 - All 1st and 2nd class children for both genders survived.
-- Most of the women in 1st and 2nd class survived.
 - The only children who didn’t survive were in 3rd class.
+- Most of the women in 1st and 2nd class and crew survived.
 - Men were more likely not to survive.
 - If you saw something *fishy* in q4 above, use your new plot to explain
   the fishy-ness.
