@@ -386,7 +386,7 @@ df_q2 %>%
 - Velocity is grouped more consistently between the 60-70 degree
   temperature range. After 70 degrees, there’s clearly much more
   variation in velocity which signals that temperature was impacting
-  Mendleson’s results.
+  Michelson’s results.
 
 ``` r
 df_q2 %>%
@@ -403,9 +403,11 @@ df_q2 %>%
 **Observations**:
 
 - Over time, the average velocity decreased and then plateaued. Perhaps
-  there was an intial learning curve, but then Mendleson got better at
+  there was an initial learning curve, but then Michelson got better at
   running consistent experiments. These inconsistencies would definitely
-  impact his estimated speed of light.
+  impact his estimated speed of light. However, there aren’t any clear
+  patterns that explain the difference between Michelson’s estimate and
+  `LIGHTSPEED_VACUUM`.
 
 ## Bibliography
 
