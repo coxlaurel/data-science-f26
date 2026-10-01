@@ -72,8 +72,9 @@ glimpse(gapminder)
 ## TASK: Find the largest and smallest values of `year` in `gapminder`
 year_max <- gapminder %>% 
   arrange(year) %>%
-    pull(year) %>%
-      last()
+  pull(year) %>%
+  last()
+
 year_min <- gapminder %>% 
   arrange(year) %>%
   pull(year) %>%
@@ -105,9 +106,9 @@ You may encounter difficulties in visualizing these data; if so document your ch
 ## TASK: Create a visual of gdpPercap vs continent
 gapminder %>%
   filter(year == year_min) %>%
-    filter(gdpPercap < 90000) %>%
-      ggplot(aes(continent, gdpPercap)) +
-      geom_boxplot()
+  filter(gdpPercap < 90000) %>%
+  ggplot(aes(continent, gdpPercap)) +
+  geom_boxplot()
 
 ```
 
@@ -130,7 +131,7 @@ gapminder %>%
 ## TASK: Identify the outliers from q2
 gapminder_outliers <- gapminder %>%
   filter(year == year_min) %>%
-    filter(gdpPercap > 12500)
+  filter(gdpPercap > 12500)
 
 gapminder_outliers
 ```
@@ -190,12 +191,12 @@ Now it's your turn! We just went through guided EDA considering the GDP per capi
 ## TASK: Your first graph
 gapminder %>%
   filter(country %in% c("United States", "Kuwait", "Switzerland")) %>%
-    ggplot(aes(year, gdpPercap, color = country)) +
-    geom_point() +
-    geom_line() +
-    labs(
-      title = "GDP per capita over time for Kuwait, Switerland, and US"
-    )
+  ggplot(aes(year, gdpPercap, color = country)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "GDP per capita over time for Kuwait, Switerland, and US"
+  )
 ```
 
 - How do the GDP gaps between the 3 outliers identified in q2 compare?
@@ -206,17 +207,17 @@ gapminder %>%
 ## TASK: Your second graph
 gapminder %>%
   group_by(continent, country) %>%
-    summarise(avg_lifeExp = mean(lifeExp)) %>%
-      ggplot(aes(continent, avg_lifeExp)) +
-      geom_boxplot() +
-      labs(
-        title = "Average Life Expectancy of Countries Per Continent"
-      )
+  summarise(avg_lifeExp = mean(lifeExp)) %>%
+  ggplot(aes(continent, avg_lifeExp)) +
+  geom_boxplot() +
+  labs(
+    title = "Average Life Expectancy of Countries Per Continent"
+  )
 
 gapminder %>%
   group_by(continent, country) %>%
-    summarise(avg_lifeEXp = mean(lifeExp)) %>%
-      filter(continent == "Oceania")
+  summarise(avg_lifeEXp = mean(lifeExp)) %>%
+  filter(continent == "Oceania")
 ```
 
 - Is Europe the prosperous powerhouse I learned about in middle school history class because of their "guns, germs, and steel"?
@@ -227,9 +228,8 @@ gapminder %>%
 ## TASK: Your third graph
 asia_outlier <- gapminder %>%
   group_by(country) %>%
-    mutate(avg_lifeExp = mean(lifeExp)) %>%
-      filter(continent == "Asia") %>%
-        filter(avg_lifeExp < 40)
+  mutate(avg_lifeExp = mean(lifeExp)) %>%
+  filter(continent == "Asia", avg_lifeExp < 40)
 
 asia_outlier %>%
   ggplot(aes(year, lifeExp)) +
