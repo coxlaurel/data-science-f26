@@ -274,7 +274,7 @@ Use the `criteria` dataframe you produced above to filter `flights` on `dest` an
 df_q5 <-
   flights %>%
 ## TODO: Use expand_grid to create a criteria dataframe
-  semi_join(flights, criteria, by = c("dest", "month"))
+  semi_join(criteria, by = c("dest", "month"))
 
 df_q5
 ```
