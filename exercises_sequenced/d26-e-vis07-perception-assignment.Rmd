@@ -43,6 +43,7 @@ mpg %>%
 **Observations**:
 
 - What are some issues with this graph?
+  - this graph is hard to discern because it alphebetically ordered, instead of being desc/asc.
 
 ### __q2__ What are some issues with the following graph? *Don't just say* "it's bad"---use concepts from the required reading.
 
@@ -57,6 +58,7 @@ as_tibble(mtcars) %>%
 ```
 
 - What are some issues with this graph?
+  - You must use the table lookup and it's hard to compare the sizes of different cars due to the area.
 
 ### __q3__ What are some issues with the following graph? *Don't just say* "it's bad"---use concepts from the required reading.
 
@@ -68,6 +70,7 @@ diamonds %>%
 ```
 
 - What are some issues with this graph?
+  - We're using stacked bar charts which have a lot of information but are difficult to read. Since the cut is stacked it's hard to discern the length of each sub bar.
 
 ### __q4__ What are some issues with the following graph? *Don't just say* "it's bad"---use concepts from the required reading.
 
@@ -81,6 +84,7 @@ diamonds %>%
 ```
 
 - What are some issues with this graph?
+  - We're using pie charts, which is reliant on angle and area to tell us information. However, you can't actually make out the count number of each section.
 
 <!-- include-exit-ticket -->
 # Exit Ticket
