@@ -222,7 +222,7 @@ df_samp_unif <-
     1:n_samples,
     function(id) {
       tibble(
-        Z = rnorm(n_observations),
+        Z = runif(n_observations, min = 0, max =1),
         id = id
       )
     }
@@ -242,7 +242,7 @@ df_samp_unif %>%
 
 **Observations**:
 
-- (Describe the shape of the sampling distribution)
+- The shape of the sampling distribution looks pretty similar to a normal distribution.
 - The sampling distribution is concentrated around the mean of `0.5`.
 - The sampling distribution stretches from `0` to `1`.
 - The sampling distribution looks roughly normal in shape
@@ -269,8 +269,8 @@ Compute the standard error for the sample mean under the following settings. Whi
 
 ```{r q2-task}
 ## TASK: Compute the standard error
-se_q2.1 <- NA_real_ # Population: norm(mean = 2, sd = 4), observations: n = 16
-se_q2.2 <- NA_real_ # Population: norm(mean =-2, sd = 8), observations: n = 32
+se_q2.1 <- 4 / sqrt(16) # Population: norm(mean = 2, sd = 4), observations: n = 16
+se_q2.2 <- 8 / sqrt(32) # Population: norm(mean =-2, sd = 8), observations: n = 32
 ```
 
 Use the following tests to check your work.
@@ -285,6 +285,7 @@ print("Nice!")
 **Observations**:
 
 - Which setting---q2.1 or q2.2---will tend to produce more accurate estimates? Why?
+  - q2.1 will produce more acurate estimates because sample size is 4 times larger than the standard deviation.
 
 Two notes:
 
@@ -308,7 +309,9 @@ set.seed(101)
 n_sample <- 20
 z_sample <- rnorm(n = n_sample, mean = 2, sd = 4)
 ## TASK: Compute the sample standard error for `z_sample`
-se_sample <- NA_real_
+se_sample <- sd(z_sample) / sqrt(n_sample)
+
+se_sample
 ```
 
 Use the following tests to check your work.
@@ -327,7 +330,9 @@ print("Well done!")
 **Observations**:
 
 - How close is your estimate `se_sample` to the true `se_q2.1`?
+  - it's 70% there
 - What accounts for the difference between these values?
+  - The sample size is larger than 4x the sd
 
 ## Fast Summary
 <!-- -------------------------------------------------- -->
