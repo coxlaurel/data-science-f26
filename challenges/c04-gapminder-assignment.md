@@ -203,14 +203,14 @@ gapminder %>%
   factor could be because it has the fewest number of countries compared
   to the other continents.
 
-- Europe’s box plot has the widest spread.
+- Asia has the furthest outlier.
 
 **Difficulties & Approaches**:
 
 - Write your challenges and your approach to solving them
   - When I first plotted my box plot with only the year filtered out, my
     y-axis was extremely large, making the whisker plots hard to read.
-    To solve this, I also filtered out the largest outlier in Asia.
+    To solve this, I switch the y-axis to a log scale.
 
 ### **q3** You should have found *at least* three outliers in q2 (but possibly many more!). Identify those outliers (figure out which countries they are).
 
