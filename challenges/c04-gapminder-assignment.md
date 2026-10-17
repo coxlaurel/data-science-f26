@@ -188,9 +188,9 @@ can.
 ## TASK: Create a visual of gdpPercap vs continent
 gapminder %>%
   filter(year == year_min) %>%
-  filter(gdpPercap < 90000) %>%
   ggplot(aes(continent, gdpPercap)) +
-  geom_boxplot()
+  geom_boxplot() +
+  scale_y_log10()
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q2-task-1.png)<!-- -->
@@ -273,7 +273,9 @@ gapminder %>%
     data = . %>% filter(country %in% c("United States", "Kuwait", "Switzerland")),
     mapping = aes(color = country),
     size = 2
-  )
+  ) +
+  scale_y_log10() +
+  facet_wrap(~ year)
 ```
 
 ![](c04-gapminder-assignment_files/figure-gfm/q4-task-1.png)<!-- -->
