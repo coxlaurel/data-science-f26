@@ -150,15 +150,14 @@ value for `names_to`.
 
 ``` r
 ## TASK: Tidy `df_stang`
-df_stang_long <-
-  df_stang %>%
-    pivot_longer(
-      names_to = c(".value", "angle"),
-      names_sep = "_",
-      cols = starts_with("E") | starts_with("nu")
-    ) %>%
-    filter(E != -1 & nu != -1) %>%
-      mutate(angle = as.integer(angle))
+df_stang_long <- df_stang %>%
+  pivot_longer(
+    names_to = c(".value", "angle"),
+    names_sep = "_",
+    cols = starts_with("E") | starts_with("nu")
+  ) %>%
+  filter(E > -1 & nu > -1) %>%
+    mutate(angle = as.integer(angle))
 
 df_stang_long
 ```
@@ -238,37 +237,35 @@ glimpse(df_stang_long)
     ## $ nu    <dbl> 0.321, 0.329, 0.310, 0.323, 0.331, 0.323, 0.329, 0.318, 0.322, 0…
 
 ``` r
-summary(df_stang_long)
+df_stang_long %>%
+  pull(., var = E, name = E) %>%
+  unique
 ```
 
-    ##      thick               alloy        angle          E               nu        
-    ##  Min.   :0.02200   Length   :26   Min.   : 0   Min.   : 9900   Min.   :0.3100  
-    ##  1st Qu.:0.03200   N.unique : 1   1st Qu.: 0   1st Qu.:10025   1st Qu.:0.3152  
-    ##  Median :0.06400   N.blank  : 0   Median :45   Median :10400   Median :0.3215  
-    ##  Mean   :0.05215   Min.nchar: 7   Mean   :45   Mean   :10335   Mean   :0.3212  
-    ##  3rd Qu.:0.08100   Max.nchar: 7   3rd Qu.:90   3rd Qu.:10500   3rd Qu.:0.3277  
-    ##  Max.   :0.08100                  Max.   :90   Max.   :10700   Max.   :0.3310
+    ## [1] 10600 10700 10500 10400 10300 10000  9900 10100
 
 ``` r
 df_stang_long %>%
-  filter(thick == 0.022)
+  pull(., var = nu, name = nu) %>%
+  unique
 ```
 
-    ## # A tibble: 6 × 5
-    ##   thick alloy   angle     E    nu
-    ##   <dbl> <chr>   <int> <dbl> <dbl>
-    ## 1 0.022 al_24st     0 10600 0.321
-    ## 2 0.022 al_24st    45 10700 0.329
-    ## 3 0.022 al_24st    90 10500 0.31 
-    ## 4 0.022 al_24st     0 10600 0.323
-    ## 5 0.022 al_24st    45 10500 0.331
-    ## 6 0.022 al_24st    90 10700 0.323
+    ##  [1] 0.321 0.329 0.310 0.323 0.331 0.318 0.322 0.319 0.326 0.330 0.327 0.328
+    ## [13] 0.320 0.315 0.314 0.312 0.316 0.311
+
+``` r
+df_stang_long %>%
+  pull(., var = thick, name = thick) %>%
+  unique
+```
+
+    ## [1] 0.022 0.032 0.064 0.081
 
 **Observations**:
 
 - Is there “one true value” for the material properties of Aluminum?
   - There isn’t “one true value” for the material properties of Aluminum
-    because `E` and `nu`
+    because `E` and `nu` aren’t constant across one alloy.
 - How many aluminum alloys are in this dataset? How do you know?
   - There’s one alloy because in the summary `N.unique` has the values
     of 1.
@@ -295,14 +292,16 @@ df_stang_long %>%
 
 **Observations**:
 
-- The 45 degree angle has the largest average nu value and is
-  approximate 0.005 larger than the other tested angles.
+- The 45 degree angle has the largest median nu value and is approximate
+  0.005 larger than the other tested angles.
 - The boxes for 0 and 90 degree are very similar is size and sit very
   closely in value together, but the 90 degree box and mean value tread
   just barely lower.
-- All boxes lower quantile are larger than the top quantile.
-- The graph does reveal a relationship between angle and Poisson’s
-  ratio.
+- All boxes Q1 quantiles are further from the median than the Q3
+  quantiles.
+- Since, angles 0 and 90 medians are very similar and the 45 degree
+  angle median is much higher, the graph does reveal a relationship
+  between angle and Poisson’s ratio.
 
 ### **q4** Consider the following statement:
 

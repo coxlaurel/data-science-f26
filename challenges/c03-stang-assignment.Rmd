@@ -70,15 +70,14 @@ Note that these data are not tidy! The data in this form are convenient for repo
 
 ```{r q1-task}
 ## TASK: Tidy `df_stang`
-df_stang_long <-
-  df_stang %>%
-    pivot_longer(
-      names_to = c(".value", "angle"),
-      names_sep = "_",
-      cols = starts_with("E") | starts_with("nu")
-    ) %>%
-    filter(E != -1 & nu != -1) %>%
-      mutate(angle = as.integer(angle))
+df_stang_long <- df_stang %>%
+  pivot_longer(
+    names_to = c(".value", "angle"),
+    names_sep = "_",
+    cols = starts_with("E") | starts_with("nu")
+  ) %>%
+  filter(E > -1 & nu > -1) %>%
+    mutate(angle = as.integer(angle))
 
 df_stang_long
 ```
@@ -117,16 +116,23 @@ print("Very good!")
 ```{r q2-task}
 glimpse(df_stang_long)
 
-summary(df_stang_long)
+df_stang_long %>%
+  pull(., var = E, name = E) %>%
+  unique
 
 df_stang_long %>%
-  filter(thick == 0.022)
+  pull(., var = nu, name = nu) %>%
+  unique
+
+df_stang_long %>%
+  pull(., var = thick, name = thick) %>%
+  unique
 ```
 
 **Observations**:
 
 - Is there "one true value" for the material properties of Aluminum?
-  - There isn't "one true value" for the material properties of Aluminum because `E` and `nu`
+  - There isn't "one true value" for the material properties of Aluminum because `E` and `nu` aren't constant across one alloy.
 - How many aluminum alloys are in this dataset? How do you know?
   - There's one alloy because in the summary `N.unique` has the values of 1.
 - What angles were tested?
@@ -150,10 +156,10 @@ df_stang_long %>%
 
 **Observations**:
 
-- The 45 degree angle has the largest average nu value and is approximate 0.005 larger than the other tested angles. 
+- The 45 degree angle has the largest median nu value and is approximate 0.005 larger than the other tested angles. 
 - The boxes for 0 and 90 degree are very similar is size and sit very closely in value together, but the 90 degree box and mean value tread just barely lower.
-- All boxes lower quantile are larger than the top quantile. 
-- The graph does reveal a relationship between angle and Poisson's ratio.
+- All boxes Q1 quantiles are further from the median than the Q3 quantiles. 
+- Since, angles 0 and 90 medians are very similar and the 45 degree angle median is much higher, the graph does reveal a relationship between angle and Poisson's ratio. 
 
 ### **q4** Consider the following statement:
 
