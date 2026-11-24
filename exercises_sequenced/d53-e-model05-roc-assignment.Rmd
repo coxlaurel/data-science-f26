@@ -11,7 +11,7 @@ reading: 17
 
 *Purpose*: With regression models, we used model metrics in order to assess and select a model (e.g. choose which features we should use). In order to do the same with classification models, we need some quantitative measure of accuracy. However, assessing the "accuracy" of a classifier is far more complicated. To do this, we'll need to understand the *receiver operating characteristic*.
 
-*Reading*: [StatQuest: ROC and AUC... clearly explained!](https://www.youtube.com/watch?v=4jRBRDbJemM) (Required, ~17 minutes)
+*Reading*: [StatQuest: ROC and AUC... clearly explained!](https://www.youtube.com/watch?v=4jRBRDbJemM) (Required, \~17 minutes)
 
 ```{r setup}
 library(tidyverse)
@@ -29,8 +29,8 @@ inv.logit <- function(x) {
 }
 ```
 
-
 ## Setup
+
 <!-- ------------------------- -->
 
 Note: The following chunk contains *a lot of stuff*, but you already did this in e-model04-logistic!
@@ -164,6 +164,7 @@ df_validate <-
 ```
 
 ## Assessing a Classifier
+
 <!-- ------------------------- -->
 
 What makes for a "good" or a "bad" classifier? When studying continuous models, we studied a variety of diagnostic plots and error metrics to assess model accuracy. However, since we're now dealing with a discrete response, our metrics are going to look very different. In order to assess a classifier, we're going to need to build up some concepts.
@@ -190,15 +191,13 @@ df_basic <-
 
 ## Positives and negatives
 
-With a binary (two-class) classifier, **there are only 4 possible outcomes of
-a single prediction**. We can summarize all four in a table:
+With a binary (two-class) classifier, **there are only 4 possible outcomes of a single prediction**. We can summarize all four in a table:
 
-|                | Predicted True | Predicted False |
-| Actually True  | True Positive  | False Negative  |
-| Actually False | False Positive | True Negative   |
+|                \| Predicted True \| Predicted False \|
+| Actually True \| True Positive \| False Negative \|
+| Actually False \| False Positive \| True Negative \|
 
-*Note*: A table with the total counts of [TP, FP, FN, TN] is called a
-[confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix).
+*Note*: A table with the total counts of [TP, FP, FN, TN] is called a [confusion matrix](https://en.wikipedia.org/wiki/Confusion_matrix).
 
 There are two ways in which we can be correct:
 
@@ -210,23 +209,18 @@ And there are two ways in which we can be incorrect:
 - **False Positive**: We predicted a case to be positive, but in reality it was negative; e.g. we predicted that a given patient has heart disease, but in reality they do not have the disease.
 - **False Negative**: We predicted a case to be negative, but in reality it was positive; e.g. we predicted that a given patient does not have heard disease, but in reality they do have the disease.
 
-Note that we might have different concerns about false positives and negatives.
-For instance in the heart disease case, we might be more concerned with flagging
-all possible cases of heart disease, particularly if follow-up examination can
-diagnose heart disease with greater precision. In that case, we might want to
-avoid false negatives but accept more false positives.
+Note that we might have different concerns about false positives and negatives. For instance in the heart disease case, we might be more concerned with flagging all possible cases of heart disease, particularly if follow-up examination can diagnose heart disease with greater precision. In that case, we might want to avoid false negatives but accept more false positives.
 
-We can make quantitative judgments about these classification tradeoffs by
-controlling classification rates with a decision threshold.
+We can make quantitative judgments about these classification tradeoffs by controlling classification rates with a decision threshold.
 
 ## Classification Rates and Decision Thresholds
 
 We can summarize the tradeoffs a classifier makes in terms of classification rates. First, let's introduce some shorthand:
 
-| TP | Total count of True Positives  |
-| FP | Total count of False Positives |
-| TN | Total count of True Negatives  |
-| FN | Total count of False Negatives |
+| TP \| Total count of True Positives \|
+| FP \| Total count of False Positives \|
+| TN \| Total count of True Negatives \|
+| FN \| Total count of False Negatives \|
 
 Two important rates are the *true positive rate* and *false positive rate*, defined as:
 
@@ -244,7 +238,7 @@ We generally want to *minimize* the FPR. In the heart disease example, this is t
 
 We can control the TPR and FPR by choosing our decision threshold for our classifier. Remember that in the previous exercise e-model04-logistic we set an arbitrary threshold of `pr_heart_disease > 0.5` for detection: We can instead pick a `pr_threshold` to make our classifier more or less sensitive, which will adjust the TPR and FPR. The next task will illustrate this idea.
 
-### __q1__ Compute the true positive rate (TPR) and false positive rate (FPR) using the model fitted above, calculating on the validation data.
+### **q1** Compute the true positive rate (TPR) and false positive rate (FPR) using the model fitted above, calculating on the validation data.
 
 *Hint 1*: Remember that you can use `summarize(n = sum(boolean))` to count the number of `TRUE` values in a variable `boolean`. Feel free to compute intermediate boolean values with things like `mutate(boolean = (x < 0) & flag)` before your summarize.
 
@@ -256,7 +250,23 @@ pr_threshold <- 0.5
 ## TODO: compute true positive rate (TPR) and false positive rate (FPR) with the
 ##       given pr_threshold. Assign these to the columns TPR and FPR.
 df_q1 <-
-  df_basic
+  df_basic %>%
+  mutate(
+    true_positive = (pr_heart_disease > pr_threshold) & heart_disease,
+    false_positive = (pr_heart_disease > pr_threshold) & !heart_disease,
+    true_negative = (pr_heart_disease <= pr_threshold) & !heart_disease,
+    false_negative = (pr_heart_disease <= pr_threshold) & heart_disease
+  ) %>%
+  summarise(
+    TP = sum(true_positive),
+    FP = sum(false_positive),
+    TN = sum(true_positive),
+    FN = sum(false_negative)
+  ) %>%
+  mutate(
+    TPR = TP / (TP + FN),
+    FPR = FP / (FP + TN)
+  )
 
 df_q1
 ```
@@ -266,8 +276,8 @@ Use the following test to check your work.
 ```{r q1-tests}
 ## NOTE: No need to edit; use this to check your work
 assertthat::assert_that(
-  all_equal(
-    df_q1 %>% select(TPR, FPR),
+  all.equal(
+    df_q1 %>% dplyr::select(TPR, FPR),
     df_validate %>%
       add_predictions(fit_basic, var = "l_heart_disease") %>%
       mutate(pr_heart_disease = inv.logit(l_heart_disease)) %>%
@@ -281,7 +291,7 @@ assertthat::assert_that(
       TPR = TP / (TP + FN),
       FPR = FP / (FP + TN)
     ) %>%
-    select(TPR, FPR)
+    dplyr::select(TPR, FPR)
   )
 )
 
@@ -292,11 +302,11 @@ print("Excellent!")
 
 As the required video mentioned, we can summarize TPR and FPR at different threshold values `pr_threshold` with the *receiver operating characteristic curve* (ROC curve). This plot gives us an overview of the tradeoffs we can achieve with our classification model.
 
-The ROC curve shows TPR against FPR. Remember that we want to *maximize* TPR and *minimize *FPR*; therefore, the ideal point for the curve to reach is the top-left point in the graph. A very poor classifier would run along the diagonal---this would be equivalent to randomly guessing the class of each observation. An ROC curve below the diagonal is worse than random guessing!
+The ROC curve shows TPR against FPR. Remember that we want to *maximize* TPR and *minimize* FPR\*; therefore, the ideal point for the curve to reach is the top-left point in the graph. A very poor classifier would run along the diagonal---this would be equivalent to randomly guessing the class of each observation. An ROC curve below the diagonal is worse than random guessing!
 
 To compute an ROC curve, we could construct a confusion matrix at a variety of thresholds, compute the TPR and FPR for each, and repeat. However, there's a small bit of "shortcut code" we could use to do the same thing. The following chunk illustrates how to compute an ROC curve.
 
-### __q2__ Inspect the following ROC curve for the basic classifier and assess its performance. Is this an effective classifier? How do you know?
+### **q2** Inspect the following ROC curve for the basic classifier and assess its performance. Is this an effective classifier? How do you know?
 
 ```{r q2-task}
 ## NOTE: No need to edit; run and inspect
@@ -319,13 +329,15 @@ df_basic %>%
 **Observations**:
 
 - Is this an effective or ineffective classifier? How do you know?
+  - not an effective classifier since it essentially follows the diagonal
 
 ## Practice Assessing Classifiers
+
 <!-- ------------------------- -->
 
 Let's get some practice reading ROC curves.
 
-### __q3__ Inspect the following ROC curve. Is this an effective classifier? What explains this model's performance? Is this model valid for prediction?
+### **q3** Inspect the following ROC curve. Is this an effective classifier? What explains this model's performance? Is this model valid for prediction?
 
 ```{r q3-task}
 ## NOTE: No need to edit
@@ -361,19 +373,30 @@ df_cheating %>%
 **Observations**:
 
 - Is this an effective classifier?
+  - This is an effective classifier
 - What explains this model's performance? Is this model valid for prediction?
+  - The AUC is maximized and but uses the outcome to predict the outcome.
 
 Next you'll fit your own model and assess its performance.
 
-### __q4__ Fit a model to the training data, and predict class probabilities on the validation data. Compare your model's performance to that of `fit_baseline` (fitted below).
+### **q4** Fit a model to the training data, and predict class probabilities on the validation data. Compare your model's performance to that of `fit_baseline` (fitted below).
 
 ```{r q4-task}
 ## TODO: Fit your own logistic regression model on df_train, predict class
 ##       probabilities on df_validate.
 ##
-fit_q4 <- NA
+fit_q4 <- glm(
+  data = df_train,
+  formula = heart_disease ~ sex + age,
+  family = "binomial"
+)
+
 df_q4 <-
-  df_validate
+  df_validate %>%
+  add_predictions(fit_q4, var = "log_odds_ratio") %>%
+  arrange(log_odds_ratio) %>%
+  rowid_to_column(var = "order") %>%
+  mutate(pr_heart_disease = inv.logit(log_odds_ratio))
 
 ## Here's another model for comparison
 fit_baseline <- glm(
@@ -418,7 +441,9 @@ bind_rows(
 **Observations**:
 
 - Is your model more or less accurate at classifying than `fit_baseline`? How do you know?
+  - My model is less accurate than fit_baseline because its AUC is less than fit_baseline
 - As you sweep from low to high values of FPR, what happens to the values of TPR? What "tradeoff" do you see in the two quantities?
+  - At lower values, my model is slightly better but than gets worse above FPR values greater than 0.25
 
 ## Selecting a Threshold
 
@@ -426,7 +451,7 @@ The ROC summarizes performance characteristics for a *variety* of thresholds `pr
 
 The following chunk plots potential `pr_threshold` against achieved TPR values for your model. Use this image to pick a classifier threshold.
 
-### __q5__ Pick a target TPR value for your heart disease predictor; what is a reasonable value for `TPR`, and why did yo pick that value? What values of `pr_threshold` meet or exceed that target TPR? What specific value for `pr_threshold` do you choose, and why?
+### **q5** Pick a target TPR value for your heart disease predictor; what is a reasonable value for `TPR`, and why did yo pick that value? What values of `pr_threshold` meet or exceed that target TPR? What specific value for `pr_threshold` do you choose, and why?
 
 ```{r q5-task}
 ## NOTE: No need to edit this; use these data to pick a threshold
@@ -442,6 +467,9 @@ df_thresholds <-
   ## End: Shortcut code for computing an ROC
 
 ## TODO: Pick a threshold using df_thresholds above
+df_thresholds %>%
+  filter(true_positive_rate >= 0.9) %>%
+  filter(false_positive_rate == min(false_positive_rate))
 
 ## NOTE: No need to edit; use this visual to help your decision
 df_thresholds %>%
@@ -456,11 +484,16 @@ df_thresholds %>%
 **Observations**:
 
 - What is a reasonable value for TPR, and why did you pick that value?
+  - A reasonable value is TPR \> 0.9 because we want to classify everyone that is TP.
 - What values of `pr_threshold` meet or exceed that TPR?
+  - pr_threshold of 0.25 meets that TPR rate of 0.9
 - What specific value of `pr_threshold` do you pick, and why?
+  - We pick a value that errors on safely classifying those with heart disease so 0.24. It's better to have more false positives in this case.
 
 <!-- include-exit-ticket -->
+
 # Exit Ticket
+
 <!-- -------------------------------------------------- -->
 
 Once you have completed this exercise, make sure to fill out the **exit ticket survey**, [linked here](https://docs.google.com/forms/d/e/1FAIpQLSeuq2LFIwWcm05e8-JU84A3irdEL7JkXhMq5Xtoalib36LFHw/viewform?usp=pp_url&entry.693978880=e-model05-roc-assignment.Rmd).
