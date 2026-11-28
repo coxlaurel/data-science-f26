@@ -31,15 +31,16 @@ Note that two kinds of patterns have been highlighted below: an outlier that lie
 
 To construct and use a control chart, follow these steps:
 
-1. Group individual observations into consecutive batches, say 4 to 10 observations. If parts are manufactured in batches, then use those groups.
-2. Take the mean of each batch, compute the "grand mean" based on all of the data, and establish "control limits" based on a confidence interval for the batch means (where $n$ is your batch size).
-3. Plot each batch mean sequentially, and visually indicate the control limits and grand mean on your plot.
-4. Compare each batch mean against the control limits and grand mean. Look for patterns to suggest batches where something out-of-the-ordinary happened. Some examples include:
+1.  Group individual observations into consecutive batches, say 4 to 10 observations. If parts are manufactured in batches, then use those groups.
+2.  Take the mean of each batch, compute the "grand mean" based on all of the data, and establish "control limits" based on a confidence interval for the batch means (where $n$ is your batch size).
+3.  Plot each batch mean sequentially, and visually indicate the control limits and grand mean on your plot.
+4.  Compare each batch mean against the control limits and grand mean. Look for patterns to suggest batches where something out-of-the-ordinary happened. Some examples include:
+
 - Batches that fall outside the control limits
 - Consecutive batches that lie above or below the mean
 - Persistent up-and-down patterns
 
-If there are no coherent patterns and if only an expected number of batch means fall outside the control limits, then there is no evidence for non-random behavior. A process free of any obvious non-random behavior is said to be under *statistical control*, or to be a  [stable process](https://en.wikipedia.org/wiki/Statistical_process_control#Stable_process).
+If there are no coherent patterns and if only an expected number of batch means fall outside the control limits, then there is no evidence for non-random behavior. A process free of any obvious non-random behavior is said to be under *statistical control*, or to be a [stable process](https://en.wikipedia.org/wiki/Statistical_process_control#Stable_process).
 
 If you *do* detect something out-of-the-ordinary, use the batch index to go investigate those cases in greater detail. **A control chart helps you *detect* when something went wrong---it does *not* tell you what went wrong.**
 
@@ -57,7 +58,7 @@ df_data <-
 
 Following Step 1, we need to assign batch identifiers to group the data.
 
-### __q1__ Use integer division `%/%` and the `row_number()` helper to group consecutive observations into groups of `4` with a common identifier `id`.
+### **q1** Use integer division `%/%` and the `row_number()` helper to group consecutive observations into groups of `4` with a common identifier `id`.
 
 *Hint*: Since `R` is a one-based index language, you will need to adjust the output of `row_number()` before performing the integer division `%/%`.
 
@@ -66,7 +67,7 @@ Following Step 1, we need to assign batch identifiers to group the data.
 #        consecutive groups of 4 rows have the same id
 df_q1 <-
   df_data %>%
-  mutate(id = row_number())
+  mutate(id = (row_number() - 1) %/% 4)
 df_q1
 ```
 
@@ -94,7 +95,7 @@ print("Nice!")
 
 Next, we'll use our knowledge about confidence intervals and the CLT to set the *control limits*, based on our batch size.
 
-### __q2__ Use a central limit theorem (CLT) approximation to set 3 sigma confidence interval limits on the group mean you computed above.
+### **q2** Use a central limit theorem (CLT) approximation to set 3 sigma confidence interval limits on the group mean you computed above.
 
 *Note*: A 3 sigma bound corresponds to a coverage probability of `1 - pnorm(-3) * 2`; approximately $99.7%$.
 
@@ -103,9 +104,16 @@ Next, we'll use our knowledge about confidence intervals and the CLT to set the 
 ```{r q2-task}
 ## TODO: Edit the code below to create an `id` column where
 #        consecutive groups of 4 rows have the same id
-X_grand <- NA_real_
-X_g4_lo <- NA_real_
-X_g4_up <- NA_real_
+X_grand <-   
+  df_data %>%
+  summarize(X_mean = mean(X)) %>%
+  pull(X_mean)
+X_sd <-
+  df_data %>%
+  summarize(X_sd = sd(X)) %>%
+  pull(X_sd)
+X_g4_lo <- X_grand - 3 * X_sd / sqrt(4)
+X_g4_up <- X_grand + 3 * X_sd / sqrt(4)
 X_g4_lo
 X_grand
 X_g4_up
@@ -124,7 +132,7 @@ print("Excellent!")
 
 ## Visualize and Interpret
 
-### __q3__ Inspect the following control chart, and answer the questions under *observe* below.
+### **q3** Inspect the following control chart, and answer the questions under *observe* below.
 
 ```{r q3-task}
 ## NOTE: No need to edit; run and inspect
@@ -145,12 +153,18 @@ df_q1 %>%
 ```
 
 **Observations**:
+
 - How many points would you *expect* to lie outside the control limits, assume the data were completely random?
-  - (Your response here)
+
+  - about one point is outside
+
 - How many points lie *outside* the control limits? Is this about as many as you would expect if the data were random?
-  - (Your response here)
+
+  - One point outside the control limits is expected.
+
 - Do you see any coherent patterns in the points? Does this make sense?
-  - (Your response here)
+
+  - There aren't any patterns in the points because it's random.
 
 ## Control Chart: Application
 
@@ -181,7 +195,7 @@ Note that `Y` denotes a kind of comparison between multiple "exact" 1 kilogram m
 
 First, try plotting and interpreting the data without a control chart.
 
-### __q4__ Plot the measured values `Y` against their date of measurement `date`. Answer the questions under *Observations* below.
+### **q4** Plot the measured values `Y` against their date of measurement `date`. Answer the questions under *Observations* below.
 
 ```{r q4-task}
 ## TASK: Plot Y vs date
@@ -192,34 +206,42 @@ df_mass %>%
   labs(y = "Measurement (micrograms)")
 ```
 
-**Observations**:
-- These measurement were carried out by some of the most experienced measurement scientists in the world. Are professional measurements *exactly* repeatable?
-  - (Your response here)
-- What patterns do you notice?
-  - (Your observation here)
-  - (Your observation here)
-  - ...
+**Observations**: 
+- These measurement were carried out by some of the most experienced measurement scientists in the world. Are professional measurements *exactly* repeatable? 
+
+  - No
+  
+- What patterns do you notice? 
+
+  - around date 86 the variation is really large.
+  - As time goes on there are more data points.
 
 Next, prepare the data for a control chart of the NIST data.
 
-### __q5__ Generate control chart data for a batch size of `10`.
+### **q5** Generate control chart data for a batch size of `10`.
 
 ```{r q5-task}
 n_group <- 10
-## TODO: Complete the following code to prepare the data for a control chart
-## Batched data; edit this code
 df_q4 <-
   df_mass %>%
-  group_by(date) %>%
+  mutate(group_id = (row_number() - 1) %/% n_group) %>%
+  group_by(group_id) %>%
   summarize(
     Y_mean = mean(Y),
     date = min(date)
   )
-## Control limits and grand mean; complete this code
-Y_mean <- NA_real_
-Y_sd <- NA_real_
-Y_g_lo <- NA_real_
-Y_g_up <- NA_real_
+
+Y_mean <-
+  df_mass %>%
+  summarize(Y_mean = mean(Y)) %>%
+  pull(Y_mean)
+Y_sd <-
+  df_mass %>%
+  summarize(Y_sd = sd(Y)) %>%
+  pull(Y_sd)
+
+Y_g_lo <- Y_mean - 3 * Y_sd / sqrt(n_group)
+Y_g_up <- Y_mean + 3 * Y_sd / sqrt(n_group)
 Y_g_lo
 Y_mean
 Y_g_up
@@ -238,7 +260,7 @@ print("Excellent!")
 
 Next, plot the control chart data and inspect.
 
-### __q6__ Run the following chunk and answer the questions under *Observations* below.
+### **q6** Run the following chunk and answer the questions under *Observations* below.
 
 ```{r q6-task}
 ## NOTE: No need to edit; run and inspect
@@ -255,16 +277,25 @@ df_q4 %>%
   )
 ```
 
-**Observations**:
-- Copy the patterns you noticed above down here; compare those against this new control chart.
-  - (Your responses here)
-- What additional observations can you make, based on the control chart?
-  - (Your response here)
+**Observations**: 
+- Copy the patterns you noticed above down here; compare those against this new control chart. 
+
+  - around date 86 the variation is really large.
+  - As time goes on there are more data points.
+  
+- What additional observations can you make, based on the control chart? 
+
+  - There are multiple batches outside the control limits
+    - above
+    - and below
+  - we see a general increaseing trend and there are two occurances of this
 
 Remember that a control chart is only a *detection* tool; to say more, you would need to go investigate the data collection process.
 
 <!-- include-exit-ticket -->
+
 # Exit Ticket
+
 <!-- -------------------------------------------------- -->
 
 Once you have completed this exercise, make sure to fill out the **exit ticket survey**, [linked here](https://docs.google.com/forms/d/e/1FAIpQLSeuq2LFIwWcm05e8-JU84A3irdEL7JkXhMq5Xtoalib36LFHw/viewform?usp=pp_url&entry.693978880=e-vis10-control-chart-assignment.Rmd).
